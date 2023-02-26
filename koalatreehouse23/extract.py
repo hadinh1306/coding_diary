@@ -14,6 +14,10 @@ from utils import PLAYLIST_ID
 class ExtractSpotifyPlaylist:
     def __init__(self, scope="playlist-read-collaborative"):
         self.scope = scope
+        self.CLIENT_ID = CLIENT_ID
+        self.CLIENT_SECRET = CLIENT_SECRET
+        self.REDIRECT_URI = REDIRECT_URI
+
         self.sp = spotipy.Spotify(
             auth_manager=SpotifyOAuth(
                 client_id=self.CLIENT_ID,
@@ -28,7 +32,7 @@ class ExtractSpotifyPlaylist:
         Get a dataframe of track IDs and track name.
         """
         result_playlist_tracks = self.sp.playlist_tracks(
-            self.PLAYLIST_ID, fields="items(track(id, name))"
+            PLAYLIST_ID, fields="items(track(id, name))"
         )
         list_tracks = []
         for track in result_playlist_tracks["items"]:
