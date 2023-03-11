@@ -1,4 +1,5 @@
 import logging
+import os
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -12,27 +13,33 @@ from utils import PLAYLIST_ID
 
 
 class ExtractSpotifyPlaylist:
-    def __init__(self, scope="playlist-read-collaborative"):
+    def __init__(
+        self,
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        redirect_uri=REDIRECT_URI,
+        scope="playlist-read-collaborative",
+    ):
         self.scope = scope
-        self.CLIENT_ID = CLIENT_ID
-        self.CLIENT_SECRET = CLIENT_SECRET
-        self.REDIRECT_URI = REDIRECT_URI
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.redirect_uri = redirect_uri
 
         self.sp = spotipy.Spotify(
             auth_manager=SpotifyOAuth(
-                client_id=self.CLIENT_ID,
-                client_secret=self.CLIENT_SECRET,
-                redirect_uri=self.REDIRECT_URI,
+                client_id=self.client_id,
+                client_secret=self.client_secret,
+                redirect_uri=self.redirect_uri,
                 scope=self.scope,
             )
         )
 
-    def _get_tracks_id_and_name(self) -> pd.DataFrame:
+    def _get_tracks_id_and_name(self, playlist_id=PLAYLIST_ID) -> pd.DataFrame:
         """
         Get a dataframe of track IDs and track name.
         """
         result_playlist_tracks = self.sp.playlist_tracks(
-            PLAYLIST_ID, fields="items(track(id, name))"
+            playlist_id, fields="items(track(id, name))"
         )
         list_tracks = []
         for track in result_playlist_tracks["items"]:
@@ -44,9 +51,7 @@ class ExtractSpotifyPlaylist:
         """
         Get a unique list of track IDs.
         """
-        try:
-            assert len(tracks_df) == tracks_df["id"].nunique()
-        except AssertionError:
+        if len(tracks_df) == tracks_df["id"].nunique():
             logging.warning(
                 "There are track duplications in playlist. Review and remove duplications in app."
             )
