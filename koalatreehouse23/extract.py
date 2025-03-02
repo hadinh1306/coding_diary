@@ -74,6 +74,9 @@ class ExtractSpotifyPlaylist:
 
     def _get_audio_features(self, list_tracks: list) -> pd.DataFrame:
         """
+        DEPRECATED AFTER SPOTIFY DEPRECATING THE END POINT IN NOVEMBER 2024
+        https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api
+
         Get audio features from a json resulted from API call for tracks. Features include:
         - Duration in minutes
         - Dancability: how suitable a track is for dancing
@@ -101,9 +104,9 @@ class ExtractSpotifyPlaylist:
         list_tracks = self._get_list_of_track_id(tracks_df)
 
         tracks_release_date_df = self._get_track_release_date(list_tracks)
-        audio_features_df = self._get_audio_features(list_tracks)
 
         tracks_with_features_df = tracks_df.merge(
             tracks_release_date_df, how="left", on="id"
-        ).merge(audio_features_df, how="left", on="id")
+        )
+        tracks_with_features_df["album_release_date"] = pd.to_datetime(tracks_with_features_df["album_release_date"])
         return tracks_with_features_df

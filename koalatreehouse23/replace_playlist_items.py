@@ -1,7 +1,12 @@
 import pandas as pd
 
 from utils import SORTED_PLAYLIST_ID
-from extract import ExtractSpotifyPlaylist
+from koalatreehouse23.extract.extract import ExtractSpotifyPlaylist
+
+"""
+DEPRECATED AFTER SPOTIFY DEPRECATING THE AUDIO FEATURE END POINT IN NOVEMBER 2024
+https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api 
+"""
 
 if __name__ == "__main__":
     sp_extractor = ExtractSpotifyPlaylist(scope="playlist-read-collaborative")
